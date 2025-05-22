@@ -8,5 +8,9 @@ namespace ML_Klasifikacija.Model
 {
     public class EvaluacijaRezultat
     {
+        public double Accuracy { get; internal set; }
+        public int Precision { get; internal set; }
+        public int Recall { get; internal set; }
+        public int F1Score { get; internal set; }
     }
 }

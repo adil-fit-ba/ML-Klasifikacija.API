@@ -73,9 +73,26 @@ namespace ML_Klasifikacija.Model
             return (train, test);
         }
 
-        public EvaluacijaRezultat Evaluiraj()
+        public EvaluacijaRezultat Evaluiraj(StabloKlasifikator treningSetStabloKlasifikator, MojDataSet testSkup)
         {
-            throw new NotImplementedException();
+            int tacni = 0;
+
+            foreach (var red in testSkup.Podaci)
+            {
+                var predikcija = treningSetStabloKlasifikator.Predikcija(red);
+                if (predikcija == red.Klasa)
+                {
+                    tacni++;
+                }
+            }
+
+            return new EvaluacijaRezultat
+            {
+                Accuracy = tacni / (double)testSkup.Podaci.Count,
+                Precision = 0,
+                Recall = 0,
+                F1Score = 0,
+            };
         }
     }
 }
