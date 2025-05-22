@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.36105.23 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ML-Klasifikacija.API", "ML-Klasifikacija.API\ML-Klasifikacija.API.csproj", "{767A17D2-A7B7-41E9-A453-7378EE0ABCFD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ML-Klasifikacija.Model", "ML-Klasifikacija.Model\ML-Klasifikacija.Model.csproj", "{265C8D42-8330-4DC2-947C-2E85DC2DAB7A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{767A17D2-A7B7-41E9-A453-7378EE0ABCFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{767A17D2-A7B7-41E9-A453-7378EE0ABCFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{767A17D2-A7B7-41E9-A453-7378EE0ABCFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{767A17D2-A7B7-41E9-A453-7378EE0ABCFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{265C8D42-8330-4DC2-947C-2E85DC2DAB7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{265C8D42-8330-4DC2-947C-2E85DC2DAB7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{265C8D42-8330-4DC2-947C-2E85DC2DAB7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{265C8D42-8330-4DC2-947C-2E85DC2DAB7A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9EED415E-C364-45A3-AF86-E20D69FC586A}
+	EndGlobalSection
+EndGlobal

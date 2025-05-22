@@ -1,0 +1,6 @@
+@ML_Klasifikacija.API_HostAddress = http://localhost:5263
+
+GET {{ML_Klasifikacija.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
