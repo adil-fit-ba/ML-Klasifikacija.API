@@ -16,10 +16,4 @@
     <ProjectReference Include="..\ML-Klasifikacija.Model\ML-Klasifikacija.Model.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Files\podaci3.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

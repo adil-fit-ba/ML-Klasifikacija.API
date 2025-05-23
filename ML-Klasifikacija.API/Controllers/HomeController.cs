@@ -10,7 +10,7 @@ namespace ML_Klasifikacija.API.Controllers
         [HttpGet("Ulaz")]
         public IActionResult Ulaz()
         {
-            MojDataSet fullDataSet = ExcelAlati.Ucitaj("Files/podaci3.xlsx", "OutletSize");
+            MojDataSet fullDataSet = ExcelAlati.Ucitaj("Files/sales4.xlsx", "OutletSize");
 
             (MojDataSet treningSet, MojDataSet testSet) = fullDataSet.Podijeli(testProcenat: 0.2, random_state: 42);
 
