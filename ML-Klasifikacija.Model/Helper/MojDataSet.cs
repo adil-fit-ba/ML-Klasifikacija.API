@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ML_Klasifikacija.Model
+namespace ML_Klasifikacija.Model.Helper
 {
     public enum TipAtributa
     {
@@ -48,15 +48,29 @@ namespace ML_Klasifikacija.Model
             Podaci = podaci;
             CiljnaVarijabla = ciljnaVarijabla;
 
-            Atributi = podaci[0].Atributi.Select(kvp => new AtributMeta
-            {
-                Naziv = kvp.Key,
-                TipAtributa = double.TryParse(kvp.Value, out _) ? TipAtributa.Numericki : TipAtributa.Kategoricki
+            Atributi = podaci[0].Atributi
+                .Select(kvp => new AtributMeta
+                {
+                    Naziv = kvp.Key,
+                    TipAtributa = double.TryParse(kvp.Value, out _)  //todo: provjeriti čitav dataaset, ne samo prvi red, provjeriti da nije prazan string
+                        ? TipAtributa.Numericki
+                        : TipAtributa.Kategoricki
+                }).ToList();
+            
+            
+            var kategoricki =  Atributi.Where(x => x.TipAtributa == TipAtributa.Kategoricki)
+                .Select(x=>x.Naziv)
+                .ToList();
 
-            }).ToList();
+
+            var numericki = Atributi.Where(x => x.TipAtributa == TipAtributa.Numericki)
+                .Select(x => x.Naziv)
+                .ToList();
+
+            Console.WriteLine(string.Join(" | ", kategoricki));
         }
 
-        public (MojDataSet train, MojDataSet test) Podjeli(double testProcenat = 0.2, int? random_state = null)
+        public (MojDataSet train, MojDataSet test) Podijeli(double testProcenat = 0.2, int? random_state = null)
         {
             //todo: implementirati podjelu sa random_state, da bude konzistentno
             var random = new Random(random_state ?? DateTime.Now.Millisecond);

@@ -1,4 +1,4 @@
-﻿namespace ML_Klasifikacija.Model;
+﻿namespace ML_Klasifikacija.Model.Helper;
 
 using OfficeOpenXml;
 public class ExcelAlati

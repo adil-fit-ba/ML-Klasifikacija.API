@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ML_Klasifikacija.Model
+namespace ML_Klasifikacija.Model.Helper
 {
     public class EvaluacijaRezultat
     {
