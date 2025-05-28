@@ -1,0 +1,6 @@
+@DecisionTree_1_HostAddress = http://localhost:5050
+
+GET {{DecisionTree_1_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

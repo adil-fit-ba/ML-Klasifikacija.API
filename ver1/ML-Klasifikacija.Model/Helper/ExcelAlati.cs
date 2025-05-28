@@ -33,10 +33,7 @@ public class ExcelAlati
                 string naziv = zaglavlje[j - 1];
                 string vrijednost = lista.Cells[i, j].Text.Trim();
 
-                if (naziv == nazivCiljneKolone)
-                    klasa = vrijednost;
-                else
-                    atributi[naziv] = vrijednost;
+                atributi[naziv] = vrijednost;
             }
 
             if (!string.IsNullOrWhiteSpace(klasa))

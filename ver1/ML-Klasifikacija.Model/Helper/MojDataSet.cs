@@ -87,7 +87,7 @@ namespace ML_Klasifikacija.Model.Helper
             return (train, test);
         }
 
-        public EvaluacijaRezultat Evaluiraj(StabloKlasifikator treningSetStabloKlasifikator, MojDataSet testSkup)
+        public EvaluacijaRezultat Evaluiraj(IKlasifikator treningSetStabloKlasifikator, MojDataSet testSkup)
         {
             int tacni = 0;
 
