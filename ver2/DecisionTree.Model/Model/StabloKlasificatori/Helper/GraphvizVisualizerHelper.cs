@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DecisionTree.Model.Model;
+namespace DecisionTree.Model.Model.StabloKlasificatori.Helper;
 
-public static class GraphvizVisualizer
+public static class GraphvizVisualizerHelper
 {
     // Ako Graphviz nije u sistemskoj PATH varijabli, ovdje ručno postavite putanju do dot.exe:
     public static string DotExePath = @"C:\Graphviz-12.2.1-win64\bin\dot.exe";
@@ -22,7 +22,7 @@ public static class GraphvizVisualizer
     /// <param name="korijen"></param>
     /// <param name="outpuFilePath"></param>
     /// <returns></returns>
-    public static string MakeDotFile(CvorStabla korijen, string outpuFilePath)
+    public static string MakeDotFile(CvorStabla2 korijen, string outpuFilePath)
     {
         var naziv = Path.GetFileNameWithoutExtension(outpuFilePath);
         var sb = new StringBuilder();
@@ -30,9 +30,9 @@ public static class GraphvizVisualizer
         sb.AppendLine("node [shape=box];");
 
         int id = 0;
-        Dictionary<CvorStabla, int> nodeIds = new();
+        Dictionary<CvorStabla2, int> nodeIds = new();
 
-        void Print(CvorStabla cvor)
+        void Print(CvorStabla2 cvor)
         {
             if (!nodeIds.ContainsKey(cvor))
                 nodeIds[cvor] = id++;
@@ -81,6 +81,7 @@ public static class GraphvizVisualizer
     /// <param name="format">Format izlazne slike (npr. "png", "svg")</param>
     public static void DotFileUSliku(string ulazDotFajl, string format = "png")
     {
+
         var punaPutanjaDot = Path.GetFullPath(ulazDotFajl);
         var punaPutanjaIzlaz = Path.ChangeExtension(punaPutanjaDot, format);
 
@@ -104,6 +105,12 @@ public static class GraphvizVisualizer
         process.WaitForExit();
 
         if (process.ExitCode != 0)
-            throw new Exception($"Greška prilikom izvođenja 'dot': {errors}");
+        {
+            Console.WriteLine($"Graphviz {DotExePath} executable nije pronađen. Provjerite putanju ili instalirajte Graphviz.");
+        }
+        else
+        {
+            Console.WriteLine($"Kreiran fajl {punaPutanjaIzlaz}.");
+        }
     }
 }

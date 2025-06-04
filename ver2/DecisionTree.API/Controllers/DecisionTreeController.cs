@@ -2,9 +2,9 @@
 
 using DecisionTree.Model.DataSet;
 using DecisionTree.Model.Helper;
-using DecisionTree.Model.Model;
+using DecisionTree.Model.Model.StabloKlasificatori.Helper;
 using Microsoft.AspNetCore.Mvc;
-using static StabloKlasifikator;
+using static StabloKlasifikator2;
 
 [ApiController]
 [Route("api/[controller]/[action]")]
@@ -97,8 +97,8 @@ public class DecisionTreeController : ControllerBase
 
         (MojDataSet treningSet, MojDataSet testSet) = fullDataSet.PodijeliStratifikovano(zahtjev.TestProcenat, random_state: 42);
 
-        StabloKlasifikator stablo = new StabloKlasifikator(treningSet, zahtjev.KlasifikatorParamteri);
-        GraphvizVisualizer.MakeDotFile(stablo.korijen, "Files/Sales3");
+        StabloKlasifikator2 stablo = new StabloKlasifikator2(treningSet, zahtjev.KlasifikatorParamteri);
+        GraphvizVisualizerHelper.MakeDotFile(stablo.korijen, "Files/Sales3");
 
         EvaluacijaRezultat rezultat = fullDataSet.Evaluiraj(stablo, testSet);
 
@@ -159,7 +159,7 @@ public class DecisionTreeController : ControllerBase
             };
 
             var (treningSet, testSet) = fullDataSet.Podijeli(testProcenat, random_state: 42);
-            var stablo = new StabloKlasifikator(treningSet, parametri);
+            var stablo = new StabloKlasifikator2(treningSet, parametri);
             var rezultat = fullDataSet.Evaluiraj(stablo, testSet);
 
             rezultati.Add(new
@@ -213,8 +213,8 @@ public class DecisionTreeController : ControllerBase
         MojDataSet fullDataSet = _ucitavac.Ucitaj(zahtjev.PutanjaDoFajla, zahtjev.CiljnaVarijabla);
         (MojDataSet treningSet, MojDataSet testSet) = fullDataSet.Podijeli(zahtjev.TestProcenat, random_state: 42);
 
-        StabloKlasifikator stablo = new StabloKlasifikator(treningSet, zahtjev.KlasifikatorParamteri);
-        GraphvizVisualizer.MakeDotFile(stablo.korijen, zahtjev.PutanjaDoFajla);
+        StabloKlasifikator2 stablo = new StabloKlasifikator2(treningSet, zahtjev.KlasifikatorParamteri);
+        GraphvizVisualizerHelper.MakeDotFile(stablo.korijen, zahtjev.PutanjaDoFajla);
         EvaluacijaRezultat rezultat = fullDataSet.Evaluiraj(stablo, testSet);
 
         return Ok(new

@@ -1,6 +1,6 @@
 ﻿using OfficeOpenXml;
 
-namespace DecisionTree.Model.Helper;
+namespace DecisionTree.Model.DataSet;
 
 public class ExcelHelper
 {
