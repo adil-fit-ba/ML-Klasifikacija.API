@@ -21,12 +21,10 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
-        builder.Services.AddTransient<ExcelHelper>();
-
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
-        app.UseDeveloperExceptionPage(); // <-- OVO DODAJ
+        app.UseDeveloperExceptionPage(); 
         app.UseSwagger();
         app.UseSwaggerUI();
 

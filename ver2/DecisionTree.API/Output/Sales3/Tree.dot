@@ -1,4 +1,4 @@
-digraph Sales3 {
+digraph Tree {
 node [shape=box];
 node0 [label="ProductType"];
 node0 -> node1 [label="Meat"];

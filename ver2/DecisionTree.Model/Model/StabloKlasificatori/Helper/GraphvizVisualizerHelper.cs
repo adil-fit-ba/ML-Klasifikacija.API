@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace DecisionTree.Model.Model.StabloKlasificatori.Helper;
@@ -20,19 +21,20 @@ public static class GraphvizVisualizerHelper
     /// zip-verzija ne zahtijeva admin permisije, ali treba ručno postaviti putanju do dot.exe ili je navesti u "DotExePath"
     /// </summary>
     /// <param name="korijen"></param>
-    /// <param name="outpuFilePath"></param>
+    /// <param name="outputFilePath"></param>
     /// <returns></returns>
-    public static string MakeDotFile(CvorStabla2 korijen, string outpuFilePath)
+    public static string MakeDotFile(CvorStabla korijen, string outputFilePath)
     {
-        var naziv = Path.GetFileNameWithoutExtension(outpuFilePath);
+        var naziv = Path.GetFileNameWithoutExtension(outputFilePath);
+        naziv = Regex.Replace(naziv, @"[^a-zA-Z]", "");
         var sb = new StringBuilder();
         sb.AppendLine($"digraph {naziv} {{");
         sb.AppendLine("node [shape=box];");
 
         int id = 0;
-        Dictionary<CvorStabla2, int> nodeIds = new();
+        Dictionary<CvorStabla, int> nodeIds = new();
 
-        void Print(CvorStabla2 cvor)
+        void Print(CvorStabla cvor)
         {
             if (!nodeIds.ContainsKey(cvor))
                 nodeIds[cvor] = id++;
@@ -63,14 +65,20 @@ public static class GraphvizVisualizerHelper
 
         sb.AppendLine("}");
 
-        if (!outpuFilePath.EndsWith(".dot"))
-            outpuFilePath = Path.ChangeExtension(outpuFilePath, ".dot");
+        if (!outputFilePath.EndsWith(".dot"))
+            outputFilePath = Path.ChangeExtension(outputFilePath, ".dot");
 
-        File.WriteAllText(outpuFilePath, sb.ToString());
+        var folder = Path.GetDirectoryName(outputFilePath);
+        if (folder is not null && !Directory.Exists(folder))
+        {
+            Directory.CreateDirectory(folder);
+        }
 
-        DotFileUSliku(outpuFilePath);
+        File.WriteAllText(outputFilePath, sb.ToString());
 
-        return outpuFilePath;
+        DotFileUSliku(outputFilePath);
+
+        return outputFilePath;
     }
 
 
@@ -85,12 +93,14 @@ public static class GraphvizVisualizerHelper
         var punaPutanjaDot = Path.GetFullPath(ulazDotFajl);
         var punaPutanjaIzlaz = Path.ChangeExtension(punaPutanjaDot, format);
 
+        string arg = $"-T{format} \"{punaPutanjaDot}\" -o \"{punaPutanjaIzlaz}\"";
+
         var process = new Process
         {
             StartInfo = new ProcessStartInfo
             {
                 FileName = string.IsNullOrWhiteSpace(DotExePath) ? "dot.exe" : DotExePath,
-                Arguments = $"-T{format} \"{punaPutanjaDot}\" -o \"{punaPutanjaIzlaz}\"",
+                Arguments = arg,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,

@@ -4,7 +4,7 @@ namespace DecisionTree.Model.DataSet;
 
 public class ExcelHelper
 {
-    public MojDataSet Ucitaj(string putanja, string? ciljnaVarijabla = null)
+    public static MojDataSet Ucitaj(string putanja, string? ciljnaVarijabla = null)
     {
         if (!File.Exists(putanja))
             throw new Exception("Excel fajl nije pronađen.");
