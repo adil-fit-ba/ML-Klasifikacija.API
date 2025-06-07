@@ -260,7 +260,7 @@ public class MojDataSet
     }
 
     // 📊 Funkcija za izračun tačnosti predikcije
-    public EvaluacijaRezultat Evaluiraj(IKlasifikator klasifikator, MojDataSet testSkup)
+    public EvaluacijaRezultat Evaluiraj(KlasifikatorBase klasifikator, MojDataSet testSkup)
     {
         var rezultat = new EvaluacijaRezultat
         {

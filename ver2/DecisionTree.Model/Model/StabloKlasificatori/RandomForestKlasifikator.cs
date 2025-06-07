@@ -1,6 +1,6 @@
 ﻿using DecisionTree.Model.Model;
 
-public class RandomForestKlasifikator : IKlasifikator
+public class RandomForestKlasifikator : KlasifikatorBase
 {
     public readonly List<StabloKlasifikator> stabla;
     private readonly Random _random;
@@ -8,8 +8,9 @@ public class RandomForestKlasifikator : IKlasifikator
     public class RandomForestParametri
     {
         public int BrojStabala { get; set; } = 10;
-        public int? BrojAtributa { get; set; } // null znači koristi sve atribute
+        public int? BrojAtributa { get; set; } // null znači koristi sve atribute, inače "feature bagging!"
         public StabloKlasifikator.StabloKlasifikatorParamteri ParametriStabla { get; set; } = new();
+        public int? RandomState { get; set; } = 42;
     }
 
     public RandomForestKlasifikator(MojDataSet podaci, RandomForestParametri parametri) : base(nameof(RandomForestKlasifikator), parametri)
@@ -17,7 +18,8 @@ public class RandomForestKlasifikator : IKlasifikator
         ArgumentNullException.ThrowIfNull(podaci);
         ArgumentNullException.ThrowIfNull(parametri);
 
-        _random = new Random(42); // možeš koristiti parametar
+        _random = new Random(parametri.RandomState ?? DateTime.Now.Ticks.GetHashCode());
+
         stabla = new List<StabloKlasifikator>();
 
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
@@ -32,8 +34,8 @@ public class RandomForestKlasifikator : IKlasifikator
                 bootstrapPodaci.Add(podaci.Podaci[randomIndex]);     // dodaj u novi skup
             }
 
-            // 2- Random atributi
             var atributi = podaci.Atributi.Where(a => a.KoristiZaModel).ToList();
+            // 2- Random atributi "feature bagging!"
             if (parametri.BrojAtributa.HasValue)
             {
                 atributi = atributi.OrderBy(_ => _random.Next()).Take(parametri.BrojAtributa.Value).ToList();
@@ -53,13 +55,18 @@ public class RandomForestKlasifikator : IKlasifikator
         this.DodatniInfo["BrojStabala"] = stabla.Count;
     }
 
-    public override string Predikcija(Dictionary<string, VrijednostAtributa> atributi)
+    public override string Predikcija(Dictionary<string, VrijednostAtributa> noviCase)
     {
         // Glasanje većine
-        var glasovi = stabla.Select(stablo => stablo.Predikcija(atributi));
-        return glasovi
-            .GroupBy(x => x)
-            .OrderByDescending(g => g.Count())
-            .First().Key;
+        // Za svako stablo "s", poziva Predikcija(atributi).
+        // svako stablo daje neku predikciju, tako da će rezultat ovog biti niz predikcija (niz klasa), npr
+        // "Low", Low", "High", "Low", "Medium", "Low", "Medium"
+        // finalni rezultat predikcije RandomForsta jeste većina glasova, tj. "Low" za prethodni slučaj.
+        string[] glasovi = stabla.Select(s => s.Predikcija(noviCase)).ToArray(); 
+
+        return glasovi 
+            .GroupBy(x => x) // grupiše predikcije po klasi
+            .OrderByDescending(g => g.Count()) // sortira po veličini grupe
+            .First().Key; // uzima klasu koja ima najviše glasova
     }
 }

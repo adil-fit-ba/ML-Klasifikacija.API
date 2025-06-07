@@ -93,7 +93,7 @@ public class CvorStabla
 /// Koristi Gini indeks i podržava samo kategorijske atribute.
 /// </summary>
 
-public class StabloKlasifikator : IKlasifikator
+public class StabloKlasifikator : KlasifikatorBase
 {
     public readonly CvorStabla korijen;
 

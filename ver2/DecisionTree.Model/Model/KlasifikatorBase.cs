@@ -1,13 +1,13 @@
 ﻿namespace DecisionTree.Model.Model;
 
-public abstract class IKlasifikator
+public abstract class KlasifikatorBase
 {
     public string Naziv { get; init; }
     public Dictionary<string, object> Parametri { get; init; } = new();
     public Dictionary<string, object> DodatniInfo { get; init; } = new();
     public double VrijemeTreniranjaSek { get; init; }
 
-    protected IKlasifikator(string naziv, object parametri)
+    protected KlasifikatorBase(string naziv, object parametri)
     {
         Naziv = naziv;
         Parametri = PretvoriUParametre(parametri);
