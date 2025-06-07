@@ -113,7 +113,7 @@ public class DecisionTreeController : ControllerBase
             TestProcenat = 0.2,
             KlasifikatorParamteri = new()
             {
-                BrojAtributa = 4, // koristi sve atribute
+                BrojAtributa = null, // null koristi sve atribute
                 BrojStabala = 10,
                 ParametriStabla = new StabloKlasifikator.StabloKlasifikatorParamteri
                 {
