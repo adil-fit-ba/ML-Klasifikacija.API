@@ -154,6 +154,8 @@ public class MojDataSet
     public List<RedPodatka> Podaci { get; set; } = new();
     public List<AtributMeta> Atributi { get; set; } = new();
     public string? CiljnaKolona { get; set; }
+    public AtributMeta CiljnaKolonaMeta => Atributi.Single(x => x.Naziv == CiljnaKolona);
+
 
     public MojDataSet(List<string> historija, List<RedPodatka> podaci, List<AtributMeta> atributi, string? ciljnaVarijabla = null)
     {

@@ -2,6 +2,7 @@
 
 using DecisionTree.Model.DataSet;
 using DecisionTree.Model.Helper;
+using DecisionTree.Model.Model.MLP;
 using DecisionTree.Model.Model.StabloKlasificatori.Helper;
 using Microsoft.AspNetCore.Mvc;
 using static RandomForestKlasifikator;
@@ -171,19 +172,27 @@ public class DecisionTreeController : ControllerBase
         });
     }
 
-
     [HttpGet]
-    public IActionResult SalesMultiple()
+    public IActionResult SalesMLP()
     {
-        var fajl = "Files/Sales3.xlsx";
-        var ciljnaKolona = "SalesCategory";
-        var testProcenat = 0.2;
+        MLPZahtjev zahtjev = new()
+        {
+            PutanjaDoFajla = "Files/Sales3.xlsx",
+            CiljnaVarijabla = "SalesCategory",
+            TestProcenat = 0.2,
+            KlasifikatorParamteri = new()
+            {
+              SkriveniSlojevi = [5, 5] //primjer slojeva
+            }
+        };
 
-        MojDataSet fullDataSet = ExcelHelper.Ucitaj(fajl);
+        MojDataSet fullDataSet0 = ExcelHelper.Ucitaj(zahtjev.PutanjaDoFajla);
+
+        MojDataSet fullDataSet = fullDataSet0.Clone();
 
         var (q1, q3) = KvartilaHelper.IzracunajKvartile(fullDataSet.Podaci, "OutletSales");
 
-        fullDataSet.DodajKolonuKategorijski(ciljnaKolona, red =>
+        fullDataSet.DodajKolonuKategorijski("SalesCategory", red =>
         {
             if (!red.Atributi.TryGetValue("OutletSales", out var attr) || !attr.Broj.HasValue)
                 return null;
@@ -194,48 +203,30 @@ public class DecisionTreeController : ControllerBase
             return "Medium";
         });
 
-        fullDataSet.SetCiljnaVarijabla(ciljnaKolona);
+        fullDataSet.CiljnaKolona = "SalesCategory";
         fullDataSet.IskljuciAtribute("OutletSales");
 
         fullDataSet.TransformNumerickuKolonuPoGrupi(
             nazivKolone: "Weight",
             grupnaKolona1: "ProductType",
             grupnaKolona2: "OutletType",
-            transformacija: (stara, grupe) => stara ?? MedianHelper.IzracunajMedijan(grupe),
+            transformacija: (stara, vrijednostiGrupe) => stara ?? MedianHelper.IzracunajMedijan(vrijednostiGrupe),
             opisTransformacijeZaHistoriju: "medijana"
         );
 
-        fullDataSet.TransformirajKolonuNumericku("Weight", (stara, kolona) => stara ?? MedianHelper.IzracunajMedijan(kolona));
+        fullDataSet.TransformirajKolonuNumericku("Weight", (stara, vrijednostiKolone) => stara ?? MedianHelper.IzracunajMedijan(vrijednostiKolone));
 
-        // za stablo ne treba one-hot encoding
-        // fullDataSet.NapraviOneHotEncodingSveKolone();
 
-        // Petlja kroz više konfiguracija stabla
-        var rezultati = new List<object>();
+        (MojDataSet treningSet, MojDataSet testSet) = fullDataSet.Podijeli(zahtjev.TestProcenat, random_state: 42);
 
-        for (int maxDepth = 3; maxDepth <= 10; maxDepth++)
+        MLPKlasifikator stablo = new MLPKlasifikator(treningSet, zahtjev.KlasifikatorParamteri);
+
+        EvaluacijaRezultat rezultat = fullDataSet.Evaluiraj(stablo, testSet);
+
+        return Ok(new
         {
-            var parametri = new StabloKlasifikatorParamteri
-            {
-                MaxDepth = maxDepth,
-                MinSamples = 5
-            };
-
-            var (treningSet, testSet) = fullDataSet.Podijeli(testProcenat, random_state: 42);
-            var stablo = new StabloKlasifikator(treningSet, parametri);
-            var rezultat = fullDataSet.Evaluiraj(stablo, testSet);
-
-            rezultati.Add(new
-            {
-                parametri.MaxDepth,
-                rezultat.Accuracy,
-                AvgF1 = rezultat.AvgF1Score,
-                rezultat.VrijemeTreniranjaSek,
-                rezultat.VrijemeEvaluacijeSek
-            });
-        }
-
-        return Ok(rezultati);
+            rezultat,
+        });
     }
 
     [HttpGet]
@@ -251,6 +242,34 @@ public class DecisionTreeController : ControllerBase
                 MaxDepth = 6,
                 MinSamples = 6
             }
+        });
+    }
+
+    [HttpGet]
+    public IActionResult MushroomMLP()
+    {
+        MLPZahtjev zahtjev = new()
+        {
+            PutanjaDoFajla = "Files/mushroom1.xlsx",
+            CiljnaVarijabla = "class",
+            TestProcenat = 0.2,
+            KlasifikatorParamteri = new()
+            {
+                SkriveniSlojevi = [5, 5] //primjer slojeva
+            }
+        };
+
+        MojDataSet fullDataSet = ExcelHelper.Ucitaj(zahtjev.PutanjaDoFajla, zahtjev.CiljnaVarijabla);
+
+        (MojDataSet treningSet, MojDataSet testSet) = fullDataSet.Podijeli(zahtjev.TestProcenat, random_state: 42);
+
+        MLPKlasifikator stablo = new MLPKlasifikator(treningSet, zahtjev.KlasifikatorParamteri);
+
+        EvaluacijaRezultat rezultat = fullDataSet.Evaluiraj(stablo, testSet);
+
+        return Ok(new
+        {
+            rezultat,
         });
     }
 
@@ -288,23 +307,25 @@ public class DecisionTreeController : ControllerBase
 
     public class StabloZahtjev
     {
-        public string PutanjaDoFajla { get; set; } = string.Empty;
-
-        public string CiljnaVarijabla { get; set; } = string.Empty;
-
-        public double TestProcenat { get; set; } = 0.2;
-
-        public StabloKlasifikatorParamteri KlasifikatorParamteri { get; set; } = new();
+        public required string PutanjaDoFajla { get; set; } = string.Empty;
+        public required string CiljnaVarijabla { get; set; } = string.Empty;
+        public required double TestProcenat { get; set; } = 0.2;
+        public required StabloKlasifikatorParamteri KlasifikatorParamteri { get; set; } = new();
     }
 
     public class RandomForstZahtjev
     {
-        public string PutanjaDoFajla { get; set; } = string.Empty;
+        public required string PutanjaDoFajla { get; set; } = string.Empty;
+        public required string CiljnaVarijabla { get; set; } = string.Empty;
+        public required double TestProcenat { get; set; } = 0.2;
+        public required RandomForestParametri KlasifikatorParamteri { get; set; } = new();
+    }
 
-        public string CiljnaVarijabla { get; set; } = string.Empty;
-
-        public double TestProcenat { get; set; } = 0.2;
-
-        public RandomForestParametri KlasifikatorParamteri { get; set; } = new();
+    public class MLPZahtjev
+    {
+        public required string PutanjaDoFajla { get; set; } = string.Empty;
+        public required string CiljnaVarijabla { get; set; } = string.Empty;
+        public required double TestProcenat { get; set; } = 0.2;
+        public required MLPKlasifikator.MLPParametri KlasifikatorParamteri { get; set; }
     }
 }
