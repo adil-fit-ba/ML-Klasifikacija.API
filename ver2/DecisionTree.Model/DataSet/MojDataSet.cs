@@ -154,7 +154,7 @@ public class MojDataSet
     public List<string> Historija { get; set; } = [];
     public List<RedPodatka> Podaci { get; set; } = new();
     public List<AtributMeta> Atributi { get; set; } = new();
-    public string? CiljnaKolona { get; set; }
+    public string? CiljnaKolona { get; private set; }
     public AtributMeta CiljnaKolonaMeta => Atributi.Single(x => x.Naziv == CiljnaKolona);
 
 
@@ -166,7 +166,7 @@ public class MojDataSet
         podaci.ForEach(red => red.MojDataSet = this); // Postavljamo MojDataSet za svaki red
         this.Historija = historija;
         Atributi = atributi;
-        IskljuciAtribute("ID"); // Isključujemo ID ako postoji
+        IskljuciAtribute("ID", "id"); // Isključujemo ID ako postoji
         if (!string.IsNullOrWhiteSpace(ciljnaVarijabla))
         {
             SetCiljnaVarijabla(ciljnaVarijabla);
@@ -212,11 +212,8 @@ public class MojDataSet
         {
             if (nazivi.Contains(meta.Naziv))
             {
-                if (meta.KoristiZaModel)
-                {
-                    meta.KoristiZaModel = false;
-                    DodajHistorijskiZapis($"Isključeni atribut: {meta.Naziv} iz modela učenja");
-                }
+                meta.KoristiZaModel = false;
+                DodajHistorijskiZapis($"Isključeni atribut: {meta.Naziv} iz modela učenja");
             }
         }
     }
@@ -558,6 +555,31 @@ public class MojDataSet
         }
 
         DodajHistorijskiZapis($"Standardizirane {naziviKolona.Length} kolone. Ukupno promjena: {ukupno}.");
+    }
+
+    public void StandardizirajNaOsnovu(MojDataSet treningSet)
+    {
+        foreach (var attr in Atributi.Where(a => a.TipAtributa == TipAtributa.Numericki && a.KoristiZaModel))
+        {
+            var treningAttr = treningSet.Atributi.FirstOrDefault(a => a.Naziv == attr.Naziv);
+            if (treningAttr?.Numericki == null || !treningAttr.Numericki.SrednjaVrijednost.HasValue || !treningAttr.Numericki.StandardnaDevijacija.HasValue)
+                continue;
+
+            double mean = treningAttr.Numericki.SrednjaVrijednost.Value;
+            double std = treningAttr.Numericki.StandardnaDevijacija.Value;
+
+            if (std == 0)
+                continue;
+
+            foreach (var red in Podaci)
+            {
+                double? val = red.Atributi[attr.Naziv].Broj;
+                if (val.HasValue)
+                {
+                    red.Atributi[attr.Naziv] = VrijednostAtributa.NapraviNumericki(red, (val.Value - mean) / std);
+                }
+            }
+        }
     }
 
 }

@@ -43,4 +43,14 @@ public static class MojDataSetHelperMLP
 
         return vektor;
     }
+
+    public static double[] KreirajCiljniVektor(AtributMeta atributMeta, string klasa)
+    {
+        var sveKlase = atributMeta.Kategoricki?.SveVrijednosti ?? [];
+        var vektor = new double[sveKlase.Count];
+        int indeks = sveKlase.IndexOf(klasa);
+        if (indeks >= 0)
+            vektor[indeks] = 1.0;
+        return vektor;
+    }
 }

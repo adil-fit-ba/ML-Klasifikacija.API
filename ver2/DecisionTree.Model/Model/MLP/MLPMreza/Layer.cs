@@ -10,22 +10,14 @@ public class Layer
 {
     public List<Neuron> Neuroni { get; set; } = new();
 
-    public Layer(int brojNeurona, int brojUlazaPoNeuronu, Func<double, double> aktivacijskaFunkcija)
+    public Layer(int brojNeurona, int brojUlazaPoNeuronu, Func<double, double> aktivacijskaFunkcija, Func<double, double> derivacija)
     {
         for (int i = 0; i < brojNeurona; i++)
-        {
-            Neuroni.Add(new Neuron(brojUlazaPoNeuronu, aktivacijskaFunkcija));
-        }
+            Neuroni.Add(new Neuron(brojUlazaPoNeuronu, aktivacijskaFunkcija, derivacija));
     }
 
-    // Računa izlaz cijelog sloja
     public double[] Izracunaj(double[] ulazi)
     {
-        var izlazi = new double[Neuroni.Count];
-        for (int i = 0; i < Neuroni.Count; i++)
-        {
-            izlazi[i] = Neuroni[i].Izracunaj(ulazi);
-        }
-        return izlazi;
+        return Neuroni.Select(n => n.Izracunaj(ulazi)).ToArray();
     }
 }

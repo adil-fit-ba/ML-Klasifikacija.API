@@ -12,6 +12,7 @@ namespace DecisionTree.Model.Model.MLP;
 /// </summary>
 public class MLPKlasifikator : KlasifikatorBase
 {
+    private readonly bool Loguj = true;
     private readonly List<Layer> Slojevi = new();
     private readonly bool koristiSoftmaxNaIzlazu;
     private readonly AtributMeta[] MLPAtributi;
@@ -20,6 +21,13 @@ public class MLPKlasifikator : KlasifikatorBase
     public class MLPParametri
     {
         public required int[] SkriveniSlojevi { get; set; } = [4, 4];
+
+
+        public required int BrojEpohaTreniranja = 200;
+        /// <summary>
+        /// Stopa učenja (learning rate) – određuje veličinu koraka prilikom ažuriranja težina.
+        /// </summary>
+        public double UcenjeRate { get; set; } = 0.01;
     }
 
     public MLPParametri ParametriMLP { get; }
@@ -47,12 +55,52 @@ public class MLPKlasifikator : KlasifikatorBase
         int prethodniBroj = MLPAtributi.Length;
         foreach (var brojNeurona in parametri.SkriveniSlojevi)
         {
-            Slojevi.Add(new Layer(brojNeurona, prethodniBroj, AktivacijskeFunkcijeHelper.SkriveniSlojevi.ReLU));
+            Slojevi.Add(new Layer(brojNeurona, prethodniBroj, AktivacijskeFunkcijeHelper.SkriveniSlojevi.ReLU, AktivacijskeFunkcijeHelper.SkriveniSlojevi.ReLUDerivacija));
             prethodniBroj = brojNeurona;
         }
 
-        // Izlazni sloj – linearni izlazi (softmax se primjenjuje kasnije - u predikciji)
-        Slojevi.Add(new Layer(brojIzlaza, prethodniBroj, AktivacijskeFunkcijeHelper.IzlazniSlojevi.Linear));
+        // Izlazni sloj – linearni izlazi ili Sigmoid (softmax se primjenjuje kasnije - u predikciji)
+        Slojevi.Add(new Layer(brojIzlaza, prethodniBroj, AktivacijskeFunkcijeHelper.IzlazniSlojevi.Sigmoid, AktivacijskeFunkcijeHelper.IzlazniSlojevi.SigmoidDerivacija));
+
+
+        for (int epoch = 0; epoch < ParametriMLP.BrojEpohaTreniranja; epoch++)
+        {
+            double ukupniGubitak = 0.0;
+            int brojPrimjera = 0;
+
+            foreach (var red in podaci.Podaci)
+            {
+                double[] input = MojDataSetHelperMLP.RedUInputVektor(red.Atributi, this.MLPAtributi);
+                double[] ciljniVektor = MojDataSetHelperMLP.KreirajCiljniVektor(CiljnaKolona, red.Klasa);
+
+                // Trenira i računaj loss
+                var izlaziPoSlojevima = Trenira(input, ciljniVektor);
+
+                // Loss = MSE (Mean Squared Error)
+                double gubitak = 0.0;
+                for (int i = 0; i < ciljniVektor.Length; i++)
+                    gubitak += Math.Pow(ciljniVektor[i] - izlaziPoSlojevima.Last()[i], 2);
+
+                ukupniGubitak += gubitak;
+                brojPrimjera++;
+            }
+
+            if (Loguj && (epoch % 10 == 0 || epoch == ParametriMLP.BrojEpohaTreniranja - 1))
+            {
+                Console.Write($"Epoch: {epoch}, AvgLoss: {(ukupniGubitak / brojPrimjera):F10}  --> ");
+
+                // Loguj izlaz prvog primjera
+                var prviRed = podaci.Podaci.First();
+                double[] prviInput = MojDataSetHelperMLP.RedUInputVektor(prviRed.Atributi, this.MLPAtributi);
+                double[] prviIzlaz = prviInput;
+                foreach (var sloj in Slojevi)
+                    prviIzlaz = sloj.Izracunaj(prviIzlaz);
+
+                Console.WriteLine("Primjer izlaza za prvi red: [" + string.Join(", ", prviIzlaz.Select(x => x.ToString("F10"))) + "]");
+            }
+        }
+
+
 
         stopwatchTreniranje.Stop();
         this.VrijemeTreniranjaSek = stopwatchTreniranje.ElapsedMilliseconds / 1000.0;
@@ -80,4 +128,46 @@ public class MLPKlasifikator : KlasifikatorBase
         var sveKlase = CiljnaKolona.Kategoricki?.SveVrijednosti ?? [];
         return sveKlase.ElementAtOrDefault(indeksNajvece) ?? "Nepoznato";
     }
+
+    public List<double[]> Trenira(double[] ulazi, double[] ciljneVrijednosti)
+    {
+        // FORWARD PASS
+        var izlaziPoSlojevima = new List<double[]> { ulazi };
+        double[] trenutniUlazi = ulazi;
+
+        foreach (var sloj in Slojevi)
+        {
+            trenutniUlazi = sloj.Izracunaj(trenutniUlazi);
+            izlaziPoSlojevima.Add(trenutniUlazi);
+        }
+
+        // BACKWARD PASS
+        var izlazniSloj = Slojevi.Last();
+        for (int i = 0; i < izlazniSloj.Neuroni.Count; i++)
+            izlazniSloj.Neuroni[i].IzracunajDelta(ciljneVrijednosti[i]);
+
+        for (int l = Slojevi.Count - 2; l >= 0; l--)
+        {
+            var sloj = Slojevi[l];
+            var sljedeciSloj = Slojevi[l + 1];
+
+            for (int i = 0; i < sloj.Neuroni.Count; i++)
+            {
+                double[] tezineSljedecih = sljedeciSloj.Neuroni.Select(n => n.Tezine[i]).ToArray();
+                double[] deltaSljedecih = sljedeciSloj.Neuroni.Select(n => n.Delta).ToArray();
+                sloj.Neuroni[i].IzracunajDelta(tezineSljedecih, deltaSljedecih);
+            }
+        }
+
+        // Ažuriranje težina
+        for (int l = 0; l < Slojevi.Count; l++)
+        {
+            double[] ulaziUSloj = izlaziPoSlojevima[l];
+            foreach (var neuron in Slojevi[l].Neuroni)
+                neuron.AzurirajTezine(ulaziUSloj, this.ParametriMLP.UcenjeRate);
+        }
+
+        return izlaziPoSlojevima;
+    }
+
 }

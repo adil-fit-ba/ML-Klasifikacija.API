@@ -77,7 +77,7 @@ public class DecisionTreeController : ControllerBase
             return "Medium";
         });
 
-        fullDataSet.CiljnaKolona = "SalesCategory";
+        fullDataSet.SetCiljnaVarijabla("SalesCategory");
         fullDataSet.IskljuciAtribute("OutletSales");
 
         fullDataSet.TransformNumerickuKolonuPoGrupi(
@@ -142,7 +142,7 @@ public class DecisionTreeController : ControllerBase
             return "Medium";
         });
 
-        fullDataSet.CiljnaKolona = "SalesCategory";
+        fullDataSet.SetCiljnaVarijabla("SalesCategory");
         fullDataSet.IskljuciAtribute("OutletSales");
 
         fullDataSet.TransformNumerickuKolonuPoGrupi(
@@ -179,16 +179,15 @@ public class DecisionTreeController : ControllerBase
         {
             PutanjaDoFajla = "Files/Sales3.xlsx",
             CiljnaVarijabla = "SalesCategory",
-            TestProcenat = 0.2,
+            TestProcenat = 0.5,
             KlasifikatorParamteri = new()
             {
-              SkriveniSlojevi = [5, 5] //primjer slojeva
+                BrojEpohaTreniranja = 200,
+                SkriveniSlojevi = [5, 5] //primjer slojeva
             }
         };
 
-        MojDataSet fullDataSet0 = ExcelHelper.Ucitaj(zahtjev.PutanjaDoFajla);
-
-        MojDataSet fullDataSet = fullDataSet0.Clone();
+        MojDataSet fullDataSet = ExcelHelper.Ucitaj(zahtjev.PutanjaDoFajla);
 
         var (q1, q3) = KvartilaHelper.IzracunajKvartile(fullDataSet.Podaci, "OutletSales");
 
@@ -203,7 +202,7 @@ public class DecisionTreeController : ControllerBase
             return "Medium";
         });
 
-        fullDataSet.CiljnaKolona = "SalesCategory";
+        fullDataSet.SetCiljnaVarijabla("SalesCategory");
         fullDataSet.IskljuciAtribute("OutletSales");
 
         fullDataSet.TransformNumerickuKolonuPoGrupi(
@@ -215,9 +214,13 @@ public class DecisionTreeController : ControllerBase
         );
 
         fullDataSet.TransformirajKolonuNumericku("Weight", (stara, vrijednostiKolone) => stara ?? MedianHelper.IzracunajMedijan(vrijednostiKolone));
+        fullDataSet.StandardizirajSveNumeričkeKolone();
+        fullDataSet.NapraviOneHotEncodingSveKolone(ukloniOriginalneKolone: true);
 
+        (MojDataSet treningSet, MojDataSet testSet) = fullDataSet.Podijeli(zahtjev.TestProcenat);
+        //treningSet.StandardizirajSveNumeričkeKolone();
+        //testSet.StandardizirajNaOsnovu(treningSet);
 
-        (MojDataSet treningSet, MojDataSet testSet) = fullDataSet.Podijeli(zahtjev.TestProcenat, random_state: 42);
 
         MLPKlasifikator stablo = new MLPKlasifikator(treningSet, zahtjev.KlasifikatorParamteri);
 
@@ -255,11 +258,46 @@ public class DecisionTreeController : ControllerBase
             TestProcenat = 0.2,
             KlasifikatorParamteri = new()
             {
-                SkriveniSlojevi = [5, 5] //primjer slojeva
+                SkriveniSlojevi = [5, 5], //primjer slojeva
+                BrojEpohaTreniranja = 10,
             }
         };
 
         MojDataSet fullDataSet = ExcelHelper.Ucitaj(zahtjev.PutanjaDoFajla, zahtjev.CiljnaVarijabla);
+        fullDataSet.NapraviOneHotEncodingSveKolone(ukloniOriginalneKolone: true);
+
+        (MojDataSet treningSet, MojDataSet testSet) = fullDataSet.Podijeli(zahtjev.TestProcenat, random_state: 42);
+
+        MLPKlasifikator stablo = new MLPKlasifikator(treningSet, zahtjev.KlasifikatorParamteri);
+
+        EvaluacijaRezultat rezultat = fullDataSet.Evaluiraj(stablo, testSet);
+
+        return Ok(new
+        {
+            rezultat,
+        });
+    }
+
+
+    [HttpGet]
+    public IActionResult BreastCancerWiscoinsinMLP()
+    {
+        MLPZahtjev zahtjev = new()
+        {
+            PutanjaDoFajla = "Files/Breast Cancer Wisconsin.xlsx",
+            CiljnaVarijabla = "diagnosis",
+            TestProcenat = 0.2,
+            KlasifikatorParamteri = new()
+            {
+                SkriveniSlojevi = [5, 5], 
+                BrojEpohaTreniranja = 500,
+            }
+        };
+
+        MojDataSet fullDataSet = ExcelHelper.Ucitaj(zahtjev.PutanjaDoFajla);
+
+        fullDataSet.SetCiljnaVarijabla(zahtjev.CiljnaVarijabla);
+        fullDataSet.StandardizirajSveNumeričkeKolone();
 
         (MojDataSet treningSet, MojDataSet testSet) = fullDataSet.Podijeli(zahtjev.TestProcenat, random_state: 42);
 
