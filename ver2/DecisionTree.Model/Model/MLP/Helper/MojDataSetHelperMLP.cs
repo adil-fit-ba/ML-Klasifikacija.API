@@ -9,48 +9,38 @@ namespace DecisionTree.Model.Model.MLP.Helper;
 /// <summary>
 /// Pomoćna klasa za pretvaranje redova podataka (RedPodatka) u ulazne vektore (double[])
 /// koji su spremni za korištenje u MLP mreži.
-/// Ova klasa automatski radi one-hot encoding za kategorijske atribute i
-/// priprema finalni niz brojeva koji neuronska mreža može obraditi.
+/// Ova verzija pretpostavlja da su svi atributi numerički (npr. nakon one-hot kodiranja)
+/// i u slučaju da naiđe na nenumerički atribut, baca Exception.
 /// </summary>
 public static class MojDataSetHelperMLP
 {
     /// <summary>
     /// Pretvara jedan red podataka u ulazni vektor za neuronsku mrežu.
     /// U vektor se uključuju samo atributi koji imaju oznaku "KoristiZaModel = true".
-    /// Numerički atributi se dodaju direktno kao brojevi, a kategorijski se
-    /// pretvaraju u one-hot kodirani niz.
+    /// Očekuje se da su svi atributi numerički (npr. nakon one-hot kodiranja).
     /// </summary>
-    /// <param name="red">Red podataka koji se pretvara.</param>
-    /// <param name="atributi">Lista meta informacija o atributima (AtributMeta).</param>
+    /// <param name="atributiReda">Mapa atributa (naziv → VrijednostAtributa) za jedan red.</param>
+    /// <param name="atributiMeta">Lista meta informacija o atributima koji se koriste za model.</param>
     /// <returns>Niz brojeva (double[]) koji predstavlja ulaz za neuronsku mrežu.</returns>
-    public static double[] RedUInputVektor(RedPodatka red, List<AtributMeta> atributi)
+    /// <exception cref="InvalidOperationException">Baca se ako se naiđe na atribut koji nije numerički.</exception>
+    public static double[] RedUInputVektor(Dictionary<string, VrijednostAtributa> atributiReda, AtributMeta[] atributiMeta)
     {
-        var vektor = new List<double>();
+        double[] vektor = new double[atributiMeta.Length];
 
-        foreach (var attr in atributi.Where(a => a.KoristiZaModel))
+        for (int i = 0; i < atributiMeta.Length; i++)
         {
-            var vrijednost = red.Atributi[attr.Naziv];
+            AtributMeta atribut = atributiMeta[i];
 
-            if (attr.TipAtributa == TipAtributa.Numericki)
-                vektor.Add(vrijednost.Broj ?? 0.0); // Ako je null, koristi 0
-            else // kategorijski atributi – pretvaraju se u one-hot encoding
-                vektor.AddRange(KategorijskiUOneHot(attr, vrijednost.Tekst));
+            if (atribut.TipAtributa != TipAtributa.Numericki)
+            {
+                throw new InvalidOperationException($"Atribut '{atribut.Naziv}' nije numerički (pronađen: {atribut.TipAtributa}). " +
+                                                    "Svi atributi moraju biti numerički – provjeri da li je izvršen one-hot encoding.");
+            }
+
+            var vrijednost = atributiReda[atribut.Naziv];
+            vektor[i] = vrijednost.Broj ?? 0.0;
         }
 
-        return vektor.ToArray();
-    }
-
-    /// <summary>
-    /// Pretvara vrijednost kategorijskog atributa u one-hot kodirani niz brojeva.
-    /// Svaka vrijednost iz "Top5Najcescih" se poredi s trenutnom vrijednosti,
-    /// i stavlja se 1.0 ako je ista, a 0.0 ako nije.
-    /// </summary>
-    /// <param name="attr">Meta podaci o atributu (AtributMeta).</param>
-    /// <param name="vrijednost">Vrijednost atributa za trenutni red (string).</param>
-    /// <returns>One-hot kodiran niz (IEnumerable&lt;double&gt;).</returns>
-    private static IEnumerable<double> KategorijskiUOneHot(AtributMeta attr, string? vrijednost)
-    {
-        var vrijednosti = attr.Kategoricki?.Top5Najcescih.Select(v => v.Vrijednost).ToList() ?? [];
-        return vrijednosti.Select(v => v == vrijednost ? 1.0 : 0.0);
+        return vektor;
     }
 }

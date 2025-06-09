@@ -1,16 +1,20 @@
 ﻿using DecisionTree.Model.Model.MLP.Helper;
+using DecisionTree.Model.Model.MLP.MLPMreza;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DecisionTree.Model.Model.MLP;
 
+/// <summary>
+/// MLP klasifikator koji uključuje i logiku same neuronske mreže (slojevi, predikcija).
+/// </summary>
 public class MLPKlasifikator : KlasifikatorBase
 {
-    private readonly MLPKlasifikatorMreza mreza;
-    private readonly List<AtributMeta> atributi;
+    private readonly List<Layer> Slojevi = new();
+    private readonly bool koristiSoftmaxNaIzlazu;
+    private readonly AtributMeta[] MLPAtributi;
     public AtributMeta CiljnaKolona { get; private set; }
 
     public class MLPParametri
@@ -23,55 +27,57 @@ public class MLPKlasifikator : KlasifikatorBase
     public MLPKlasifikator(MojDataSet podaci, MLPParametri parametri)
         : base(nameof(MLPKlasifikator), parametri)
     {
-        atributi = podaci.Atributi;
         CiljnaKolona = podaci.CiljnaKolonaMeta;
         ParametriMLP = parametri;
 
         var stopwatchTreniranje = System.Diagnostics.Stopwatch.StartNew();
 
-        int brojUlaza = IzracunajBrojUlaza(atributi);
-        int[] skriveniSlojevi = parametri.SkriveniSlojevi;
-        int brojIzlaza = podaci.Podaci.Select(p => p.Klasa).Distinct().Count();
+        MLPAtributi = podaci.Atributi
+            .Where(x => x.KoristiZaModel && x.TipAtributa == TipAtributa.Numericki)
+            .ToArray();
 
-        mreza = new MLPKlasifikatorMreza(
-            brojUlaza,
-            skriveniSlojevi,
-            brojIzlaza
-        );
+        if (CiljnaKolona.TipAtributa == TipAtributa.Numericki)
+        {
+            throw new InvalidOperationException("MLPKlasifikator podržava samo kategorijske ciljne varijable.");
+        }
+
+        int brojIzlaza = CiljnaKolona.Kategoricki!.BrojRazlicitihVrijednosti;
+        koristiSoftmaxNaIzlazu = true; // pretpostavljamo višeklasnu klasifikaciju!
+
+        int prethodniBroj = MLPAtributi.Length;
+        foreach (var brojNeurona in parametri.SkriveniSlojevi)
+        {
+            Slojevi.Add(new Layer(brojNeurona, prethodniBroj, AktivacijskeFunkcijeHelper.SkriveniSlojevi.ReLU));
+            prethodniBroj = brojNeurona;
+        }
+
+        // Izlazni sloj – linearni izlazi (softmax se primjenjuje kasnije - u predikciji)
+        Slojevi.Add(new Layer(brojIzlaza, prethodniBroj, AktivacijskeFunkcijeHelper.IzlazniSlojevi.Linear));
 
         stopwatchTreniranje.Stop();
         this.VrijemeTreniranjaSek = stopwatchTreniranje.ElapsedMilliseconds / 1000.0;
     }
 
-    private int IzracunajBrojUlaza(List<AtributMeta> atributi)
+    public override string Predikcija(Dictionary<string, VrijednostAtributa> noviCase)
     {
-        int broj = 0;
-        foreach (var attr in atributi.Where(a => a.KoristiZaModel))
+        double[] input = MojDataSetHelperMLP.RedUInputVektor(noviCase, MLPAtributi);
+        double[] izlaz = input;
+        foreach (var sloj in Slojevi)
         {
-            broj += attr.TipAtributa == TipAtributa.Numericki
-                ? 1
-                : attr.Kategoricki?.Top5Najcescih.Count ?? 0;
+            izlaz = sloj.Izracunaj(izlaz);
         }
-        return broj;
-    }
 
-    public override string Predikcija(Dictionary<string, VrijednostAtributa> atributiReda)
-    {
-        var red = new RedPodatka(atributiReda);
-        double[] input = MojDataSetHelperMLP.RedUInputVektor(red, atributi);
-        double[] izlaz = mreza.Predikcija(input);
-
-        // Izlaz možeš pretvoriti u labelu (npr. max vjerojatnost klasa)
+        if (koristiSoftmaxNaIzlazu)
+        {
+            izlaz = AktivacijskeFunkcijeHelper.IzlazniSlojevi.Softmax(izlaz);
+        }
         return InterpretirajIzlaz(izlaz);
     }
 
     private string InterpretirajIzlaz(double[] izlaz)
     {
         int indeksNajvece = Array.IndexOf(izlaz, izlaz.Max());
-        var moguceKlase = CiljnaKolona
-            .Kategoricki?
-            .Top5Najcescih.Select(v => v.Vrijednost).ToList() ?? [];
-
-        return moguceKlase.ElementAtOrDefault(indeksNajvece) ?? "Nepoznato";
+        var sveKlase = CiljnaKolona.Kategoricki?.SveVrijednosti ?? [];
+        return sveKlase.ElementAtOrDefault(indeksNajvece) ?? "Nepoznato";
     }
 }

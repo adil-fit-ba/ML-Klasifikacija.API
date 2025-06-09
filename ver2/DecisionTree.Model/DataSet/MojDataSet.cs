@@ -76,6 +76,7 @@ public class AtributMeta
 
         public required int BrojRazlicitihVrijednosti { get; set; }
         public required List<VrijednostBrojac> Top5Najcescih { get; set; }
+        public required List<string> SveVrijednosti { get; set; } = new();
     }
 
     public required string Naziv { get; init; }
@@ -133,7 +134,7 @@ public class RedPodatka
         foreach (var (key, value) in input)
         {
             var novi = value.Clone();
-            novi.RedPodatka = this; // važna korekcija!
+            novi.RedPodatka = this;
             Atributi[key] = novi;
         }
     }
@@ -369,6 +370,7 @@ public class MojDataSet
                 meta.Kategoricki = new KategorickiInfo
                 {
                     BrojRazlicitihVrijednosti = tekstualne.Count(),
+                    SveVrijednosti = tekstualne.ToList(),
                     Top5Najcescih = DistribucijaHelper.TopVrijednosti(tekstualne, 5)
                         .Select(t => new VrijednostBrojac
                         {
