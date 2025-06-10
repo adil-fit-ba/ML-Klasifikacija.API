@@ -182,7 +182,6 @@ public class DecisionTreeController : ControllerBase
             TestProcenat = 0.5,
             KlasifikatorParamteri = new()
             {
-                BrojEpohaTreniranja = 200,
                 SkriveniSlojevi = [5, 5]
             }
         };
@@ -246,7 +245,7 @@ public class DecisionTreeController : ControllerBase
             rezultatUcitan
         });
     }
-
+   
 
     [HttpGet]
     public IActionResult Mushroom()
@@ -275,7 +274,6 @@ public class DecisionTreeController : ControllerBase
             KlasifikatorParamteri = new()
             {
                 SkriveniSlojevi = [5, 5], //primjer slojeva
-                BrojEpohaTreniranja = 10,
             }
         };
 
@@ -306,7 +304,6 @@ public class DecisionTreeController : ControllerBase
             KlasifikatorParamteri = new()
             {
                 SkriveniSlojevi = [5, 5], 
-                BrojEpohaTreniranja = 500,
             }
         };
 
