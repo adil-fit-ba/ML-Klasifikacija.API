@@ -2,6 +2,7 @@
 
 using DecisionTree.Model.DataSet;
 using DecisionTree.Model.Helper;
+using DecisionTree.Model.Model;
 using DecisionTree.Model.Model.MLP;
 using DecisionTree.Model.Model.StabloKlasificatori.Helper;
 using Microsoft.AspNetCore.Mvc;
@@ -294,9 +295,8 @@ public class DecisionTreeController : ControllerBase
         });
     }
 
-
     [HttpGet]
-    public IActionResult BreastCancerWiscoinsinMLP()
+    public IActionResult BreastCancerWiscoinsinMRandomForest()
     {
         MLPZahtjev zahtjev = new()
         {
@@ -305,7 +305,7 @@ public class DecisionTreeController : ControllerBase
             TestProcenat = 0.2,
             KlasifikatorParamteri = new()
             {
-                SkriveniSlojevi = [5, 5], 
+                SkriveniSlojevi = [5, 5],
                 BrojEpohaTreniranja = 500,
             }
         };
@@ -318,6 +318,46 @@ public class DecisionTreeController : ControllerBase
         (MojDataSet treningSet, MojDataSet testSet) = fullDataSet.Podijeli(zahtjev.TestProcenat, random_state: 42);
 
         MLPKlasifikator stablo = new MLPKlasifikator(treningSet, zahtjev.KlasifikatorParamteri);
+
+        EvaluacijaRezultat rezultat = fullDataSet.Evaluiraj(stablo, testSet);
+
+        return Ok(new
+        {
+            rezultat,
+        });
+    }
+
+
+    [HttpGet]
+    public IActionResult BreastCancerWiscoinsinMLP()
+    {
+        RandomForstZahtjev zahtjev = new()
+        {
+            PutanjaDoFajla = "Files/Breast Cancer Wisconsin.xlsx",
+            CiljnaVarijabla = "diagnosis",
+            TestProcenat = 0.2,
+            KlasifikatorParamteri = new()
+            {
+                BrojAtributa = null, // null koristi sve atribute
+                BrojStabala = 10,
+                ParametriStabla = new StabloKlasifikator.StabloKlasifikatorParamteri
+                {
+                    MaxDepth = 5,
+                    MinSamples = 5,
+                    BrojGrupaZaNumericke = 5
+                }
+            }
+        };
+
+
+        MojDataSet fullDataSet = ExcelHelper.Ucitaj(zahtjev.PutanjaDoFajla);
+
+        fullDataSet.SetCiljnaVarijabla(zahtjev.CiljnaVarijabla);
+        fullDataSet.StandardizirajSveNumeričkeKolone();
+
+        (MojDataSet treningSet, MojDataSet testSet) = fullDataSet.Podijeli(zahtjev.TestProcenat, random_state: 42);
+
+        KlasifikatorBase stablo = new RandomForestKlasifikator(treningSet, zahtjev.KlasifikatorParamteri);
 
         EvaluacijaRezultat rezultat = fullDataSet.Evaluiraj(stablo, testSet);
 
