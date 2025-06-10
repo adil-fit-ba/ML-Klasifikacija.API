@@ -9,6 +9,10 @@ namespace DecisionTree.Model.Model.MLP;
 
 /// <summary>
 /// MLP klasifikator koji uključuje i logiku same neuronske mreže (slojevi, predikcija).
+/// Multy layer perceptron (MLP) je vrsta neuronske mreže koja se sastoji od više slojeva neurona, gdje svaki sloj može imati različit broj neurona.
+/// Perceptron je izvedenica od engleske riječi "perceive" (opažati) i "neuron", 
+/// 
+/// MLP = neuronska mreža s više slojeva
 /// </summary>
 public class MLPKlasifikator : KlasifikatorBase
 {
