@@ -13,6 +13,7 @@ namespace DecisionTree.Model.Model.MLP;
 /// Perceptron je izvedenica od engleske riječi "perceive" (opažati) i "neuron", 
 /// 
 /// MLP = neuronska mreža s više slojeva
+/// https://paarthasaarathi.medium.com/a-complete-guide-to-train-multi-layered-perceptron-neural-networks-3fd8145f9498
 /// </summary>
 public class MLPKlasifikator : KlasifikatorBase
 {
