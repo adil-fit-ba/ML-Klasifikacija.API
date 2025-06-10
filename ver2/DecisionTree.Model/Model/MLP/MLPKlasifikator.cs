@@ -12,10 +12,10 @@ namespace DecisionTree.Model.Model.MLP;
 /// </summary>
 public class MLPKlasifikator : KlasifikatorBase
 {
-    private readonly bool Loguj = true;
-    private readonly List<Layer> Slojevi = new();
-    private readonly bool koristiSoftmaxNaIzlazu;
-    private readonly AtributMeta[] MLPAtributi;
+    public readonly bool Loguj = true;
+    public readonly List<Layer> Slojevi = new();
+    public readonly bool koristiSoftmaxNaIzlazu;
+    public readonly AtributMeta[] MLPAtributi;
     public AtributMeta CiljnaKolona { get; private set; }
 
     public class MLPParametri
@@ -31,6 +31,20 @@ public class MLPKlasifikator : KlasifikatorBase
     }
 
     public MLPParametri ParametriMLP { get; }
+    public MLPKlasifikator(
+        MLPParametri parametri,
+        bool koristiSoftmaxNaIzlazu,
+        AtributMeta ciljanaKolona,
+        AtributMeta[] mlpAtributi,
+        List<Layer> slojevi)
+    : base(nameof(MLPKlasifikator), parametri)
+    {
+        ParametriMLP = parametri;
+        this.koristiSoftmaxNaIzlazu = koristiSoftmaxNaIzlazu;
+        CiljnaKolona = ciljanaKolona;
+        MLPAtributi = mlpAtributi;
+        Slojevi = slojevi;
+    }
 
     public MLPKlasifikator(MojDataSet podaci, MLPParametri parametri)
         : base(nameof(MLPKlasifikator), parametri)

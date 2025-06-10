@@ -1,0 +1,681 @@
+{
+  "ParametriMLP": {
+    "SkriveniSlojevi": [
+      5,
+      5
+    ],
+    "UcenjeRate": 0.01
+  },
+  "KoristiSoftmaxNaIzlazu": true,
+  "CiljnaKolona": {
+    "Naziv": "SalesCategory",
+    "TipAtributa": 0,
+    "KoristiZaModel": false,
+    "Numericki": null,
+    "Kategoricki": {
+      "BrojRazlicitihVrijednosti": 3,
+      "Top5Najcescih": [
+        {
+          "Vrijednost": "Medium",
+          "BrojPojavljivanja": 1
+        },
+        {
+          "Vrijednost": "High",
+          "BrojPojavljivanja": 1
+        },
+        {
+          "Vrijednost": "Low",
+          "BrojPojavljivanja": 1
+        }
+      ],
+      "SveVrijednosti": [
+        "Medium",
+        "High",
+        "Low"
+      ]
+    }
+  },
+  "MLPAtributi": [
+    {
+      "Naziv": "Weight",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": -1.7881578634571729,
+        "Max": 1.82901601916833,
+        "SrednjaVrijednost": 0.004020980602981289,
+        "StandardnaDevijacija": 0.9154765473690281,
+        "Medijana": -0.044720972724606935
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "ProductVisibility",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": -1.281757751912534,
+        "Max": 4.747733739441401,
+        "SrednjaVrijednost": -0.01203480333365903,
+        "StandardnaDevijacija": 0.9923631722393721,
+        "Medijana": -0.2594650819385617
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "MRP",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": -1.7584759460630879,
+        "Max": 2.021724124326273,
+        "SrednjaVrijednost": -0.0012307582992898418,
+        "StandardnaDevijacija": 0.999237077925732,
+        "Medijana": 0.03030472458150428
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "ProductType_Dairy",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": 0,
+        "Max": 1,
+        "SrednjaVrijednost": 0.08235570154856875,
+        "StandardnaDevijacija": 0.2749058747480904,
+        "Medijana": 0
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "ProductType_Soft Drinks",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": 0,
+        "Max": 1,
+        "SrednjaVrijednost": 0.04833411543876114,
+        "StandardnaDevijacija": 0.21447127715270742,
+        "Medijana": 0
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "ProductType_Meat",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": 0,
+        "Max": 1,
+        "SrednjaVrijednost": 0.05021116846550915,
+        "StandardnaDevijacija": 0.21838041813962458,
+        "Medijana": 0
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "ProductType_Fruits and Vegetables",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": 0,
+        "Max": 1,
+        "SrednjaVrijednost": 0.14406381980290944,
+        "StandardnaDevijacija": 0.35115443273110464,
+        "Medijana": 0
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "ProductType_Household",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": 0,
+        "Max": 1,
+        "SrednjaVrijednost": 0.10534960112623182,
+        "StandardnaDevijacija": 0.30700335937701895,
+        "Medijana": 0
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "ProductType_Baking Goods",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": 0,
+        "Max": 1,
+        "SrednjaVrijednost": 0.07883622712341623,
+        "StandardnaDevijacija": 0.26948297982685465,
+        "Medijana": 0
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "ProductType_Snack Foods",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": 0,
+        "Max": 1,
+        "SrednjaVrijednost": 0.14875645236977944,
+        "StandardnaDevijacija": 0.355848240473576,
+        "Medijana": 0
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "ProductType_Frozen Foods",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": 0,
+        "Max": 1,
+        "SrednjaVrijednost": 0.0997184420459878,
+        "StandardnaDevijacija": 0.2996242219212388,
+        "Medijana": 0
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "ProductType_Breakfast",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": 0,
+        "Max": 1,
+        "SrednjaVrijednost": 0.012904739558892538,
+        "StandardnaDevijacija": 0.11286366667714504,
+        "Medijana": 0
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "ProductType_Health and Hygiene",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": 0,
+        "Max": 1,
+        "SrednjaVrijednost": 0.06076959174096668,
+        "StandardnaDevijacija": 0.23890719633490023,
+        "Medijana": 0
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "ProductType_Hard Drinks",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": 0,
+        "Max": 1,
+        "SrednjaVrijednost": 0.02346316283435007,
+        "StandardnaDevijacija": 0.15136922680703238,
+        "Medijana": 0
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "ProductType_Canned",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": 0,
+        "Max": 1,
+        "SrednjaVrijednost": 0.07367433129985922,
+        "StandardnaDevijacija": 0.2612401657620398,
+        "Medijana": 0
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "ProductType_Breads",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": 0,
+        "Max": 1,
+        "SrednjaVrijednost": 0.028625058657907085,
+        "StandardnaDevijacija": 0.16675030637074878,
+        "Medijana": 0
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "ProductType_Starchy Foods",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": 0,
+        "Max": 1,
+        "SrednjaVrijednost": 0.01642421398404505,
+        "StandardnaDevijacija": 0.12710019346582974,
+        "Medijana": 0
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "ProductType_Others",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": 0,
+        "Max": 1,
+        "SrednjaVrijednost": 0.019709056780854058,
+        "StandardnaDevijacija": 0.1389985966176028,
+        "Medijana": 0
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "ProductType_Seafood",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": 0,
+        "Max": 1,
+        "SrednjaVrijednost": 0.00680431722196152,
+        "StandardnaDevijacija": 0.08220716811266789,
+        "Medijana": 0
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "LocationType_Tier 1",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": 0,
+        "Max": 1,
+        "SrednjaVrijednost": 0.27733458470201783,
+        "StandardnaDevijacija": 0.4476830495229636,
+        "Medijana": 0
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "LocationType_Tier 3",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": 0,
+        "Max": 1,
+        "SrednjaVrijednost": 0.3916001877053027,
+        "StandardnaDevijacija": 0.4881080625173885,
+        "Medijana": 0
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "LocationType_Tier 2",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": 0,
+        "Max": 1,
+        "SrednjaVrijednost": 0.3310652275926795,
+        "StandardnaDevijacija": 0.4705964754135828,
+        "Medijana": 0
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "OutletType_Supermarket Type1",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": 0,
+        "Max": 1,
+        "SrednjaVrijednost": 0.6572031909901455,
+        "StandardnaDevijacija": 0.4746442422936664,
+        "Medijana": 1
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "OutletType_Supermarket Type2",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": 0,
+        "Max": 1,
+        "SrednjaVrijednost": 0.11332707648991085,
+        "StandardnaDevijacija": 0.3169921926864457,
+        "Medijana": 0
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "OutletType_Grocery Store",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": 0,
+        "Max": 1,
+        "SrednjaVrijednost": 0.12224307836696387,
+        "StandardnaDevijacija": 0.3275663416139272,
+        "Medijana": 0
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "OutletType_Supermarket Type3",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": 0,
+        "Max": 1,
+        "SrednjaVrijednost": 0.10722665415297983,
+        "StandardnaDevijacija": 0.30940119390871285,
+        "Medijana": 0
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "OutletSize_Medium",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": 0,
+        "Max": 1,
+        "SrednjaVrijednost": 0.5457531675269827,
+        "StandardnaDevijacija": 0.4979022470940012,
+        "Medijana": 1
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "OutletSize_Small",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": 0,
+        "Max": 1,
+        "SrednjaVrijednost": 0.34537775692163303,
+        "StandardnaDevijacija": 0.4754912848259204,
+        "Medijana": 0
+      },
+      "Kategoricki": null
+    },
+    {
+      "Naziv": "OutletSize_High",
+      "TipAtributa": 1,
+      "KoristiZaModel": true,
+      "Numericki": {
+        "Min": 0,
+        "Max": 1,
+        "SrednjaVrijednost": 0.10886907555138432,
+        "StandardnaDevijacija": 0.3114748785054291,
+        "Medijana": 0
+      },
+      "Kategoricki": null
+    }
+  ],
+  "Slojevi": [
+    {
+      "Neuroni": [
+        {
+          "Tezine": [
+            -0.003802332697058786,
+            -0.07634194517758407,
+            0.6472501959359387,
+            0.0923500980467796,
+            0.9255539868891488,
+            -0.33418016013676477,
+            0.06406294687255139,
+            0.3416238681033094,
+            -0.30879036106043656,
+            0.0336926218702721,
+            -0.8691047272454328,
+            0.3756268364261032,
+            0.031307004798496144,
+            0.14637225291306147,
+            -0.31087452395125353,
+            -0.3666030795407273,
+            0.24519584623172577,
+            0.4434698211791789,
+            0.04650430375694127,
+            0.5596649371003347,
+            0.037877805754703356,
+            -0.7253172499731537,
+            -1.2433192281578849,
+            0.16937365725873296,
+            1.834722736719689,
+            -0.7558480133670523,
+            -0.581879957108753,
+            1.1202007138148784,
+            -0.31686704042865116
+          ],
+          "Bias": 0.04035506432556319
+        },
+        {
+          "Tezine": [
+            0.6910924969309391,
+            0.1071592878986254,
+            -0.5859712956684848,
+            0.7778084331422531,
+            0.30923116127392125,
+            0.10683959793439529,
+            -0.36747978272728143,
+            -0.38817625443521925,
+            -0.4044107349938776,
+            -0.8298902242283946,
+            -0.1820970926289218,
+            0.641499553353014,
+            0.8723322279723029,
+            -0.14511661530575906,
+            0.16971046125163672,
+            -0.7202734286529077,
+            -0.039773412312071425,
+            -0.007010461624460136,
+            -0.4065628912296219,
+            0.1975875058553276,
+            0.5442137697895789,
+            -0.3756958931466288,
+            0.7826585869773939,
+            -0.46525696402495403,
+            0.7618028190993187,
+            -0.20687154994630044,
+            0.6631973494271394,
+            -0.05487091249834923,
+            -0.4288168991794915
+          ],
+          "Bias": -0.0018730982160373609
+        },
+        {
+          "Tezine": [
+            -0.016622521011601478,
+            -0.18661634998397394,
+            -1.7157626112295246,
+            -0.7652975471956792,
+            -0.16671982934647192,
+            -1.1385508637529491,
+            -0.5500933281315661,
+            0.4569027104765096,
+            -0.21252945975139806,
+            0.22950330634415395,
+            -0.1901700622397995,
+            0.6990801841521267,
+            -0.2774132568581177,
+            -0.06240226019113558,
+            -0.4473621228923196,
+            0.35853510516388704,
+            -0.43466760272962524,
+            0.5437304284918608,
+            0.06311246251613374,
+            0.34617735064480065,
+            -0.5852229478804813,
+            0.43305117942604726,
+            -0.5762110656114753,
+            -0.615155358440502,
+            0.9646590849141005,
+            0.21707772564324737,
+            0.27741229848356264,
+            0.46558927812396195,
+            -0.47633477750200204
+          ],
+          "Bias": -0.30725262427933114
+        },
+        {
+          "Tezine": [
+            0.2259173747660786,
+            -0.217334494130905,
+            -0.5111804946322771,
+            0.057538345710623315,
+            -0.3392618287741839,
+            0.0012879074543997917,
+            -0.01981275557944989,
+            -0.0927517647035847,
+            0.899195346475033,
+            0.09752775212437245,
+            0.33060273425765146,
+            -0.4782026822598412,
+            -0.15978839639467665,
+            -0.44445609014406107,
+            0.24291423620756122,
+            0.06481766133572087,
+            0.8308261913207854,
+            0.7151561426075738,
+            0.12253772344443292,
+            -0.17103753935139568,
+            1.3395836789796804,
+            -0.2547391103893603,
+            -0.2641619177176698,
+            1.0351580186668663,
+            0.7441796923989458,
+            -0.19819552263069143,
+            -1.0302174712008785,
+            0.23611115166490432,
+            0.48358843886237507
+          ],
+          "Bias": -0.1842184510630693
+        },
+        {
+          "Tezine": [
+            0.4577756393933013,
+            -0.11800763049330626,
+            1.1556668713351763,
+            0.3699777949480378,
+            0.509237109807437,
+            -0.5610482651342991,
+            -0.3247593773286717,
+            -0.0815320648094206,
+            0.08791528039348022,
+            -0.374789268358665,
+            0.02475741511649026,
+            0.6609514445592212,
+            0.48188604115250266,
+            -0.17242648843346217,
+            0.20161108341144285,
+            0.09051472214650041,
+            0.5412183672074807,
+            0.6219563536712983,
+            0.3156285033307637,
+            0.49996506689327813,
+            1.1401393830136064,
+            -0.162394761265534,
+            0.5959300951330659,
+            -0.6908223504372681,
+            -0.772823917032239,
+            1.8691718171581961,
+            0.42670268241237597,
+            0.6370395689708556,
+            -0.18599517355150966
+          ],
+          "Bias": 1.0168764413424496
+        }
+      ]
+    },
+    {
+      "Neuroni": [
+        {
+          "Tezine": [
+            -0.8591561410895534,
+            -0.6803889546020354,
+            -1.4305223707755106,
+            -0.6176332937877523,
+            1.037882733961639
+          ],
+          "Bias": -0.030555690786420727
+        },
+        {
+          "Tezine": [
+            0.19802295840593287,
+            0.8234421483767013,
+            -0.14906427506586853,
+            0.3418684879985571,
+            -0.1494879715278009
+          ],
+          "Bias": 1.0823452087537921
+        },
+        {
+          "Tezine": [
+            -0.6931037029690417,
+            0.12023731267241423,
+            0.8753874227535507,
+            0.1256768138570679,
+            -0.24203661919095598
+          ],
+          "Bias": 0.15413088936123362
+        },
+        {
+          "Tezine": [
+            -0.8440548188619216,
+            -0.1420379750736012,
+            -0.2334098730262916,
+            -0.2783632464109038,
+            0.3405490509751756
+          ],
+          "Bias": 1.0367752506554717
+        },
+        {
+          "Tezine": [
+            1.8228366029672578,
+            1.0629914562615537,
+            1.166649900619984,
+            1.2215560831962327,
+            -1.4635580996013273
+          ],
+          "Bias": 0.041426462327443604
+        }
+      ]
+    },
+    {
+      "Neuroni": [
+        {
+          "Tezine": [
+            -0.6085089504467567,
+            0.3427922631977396,
+            0.3148699407634651,
+            0.08652950368606162,
+            -0.8557882324322289
+          ],
+          "Bias": 1.4214915407381161
+        },
+        {
+          "Tezine": [
+            0.581822582255445,
+            -0.3416320110941614,
+            -0.8318904762110512,
+            0.11188306589700138,
+            -2.1291348808434427
+          ],
+          "Bias": -1.9701903728734502
+        },
+        {
+          "Tezine": [
+            -0.13594959004672114,
+            -0.13249404747672308,
+            -0.1875941283850948,
+            -1.1524545148696081,
+            0.6376608007358727
+          ],
+          "Bias": -0.7056637379764547
+        }
+      ]
+    }
+  ]
+}

@@ -11,8 +11,8 @@ namespace DecisionTree.Model.Model.MLP.MLPMreza
         private readonly bool Loguj = true;
         public double[] Tezine { get; set; }
         public double Bias { get; set; }
-        private readonly Func<double, double> aktivacijskaFunkcija;
-        private readonly Func<double, double> derivacijaAktivacijskeFunkcije;
+        public readonly Func<double, double> aktivacijskaFunkcija;
+        public readonly Func<double, double> derivacijaAktivacijskeFunkcije;
 
         // Za backpropagation
         public double Output { get; private set; }

@@ -183,7 +183,7 @@ public class DecisionTreeController : ControllerBase
             KlasifikatorParamteri = new()
             {
                 BrojEpohaTreniranja = 200,
-                SkriveniSlojevi = [5, 5] //primjer slojeva
+                SkriveniSlojevi = [5, 5]
             }
         };
 
@@ -218,19 +218,35 @@ public class DecisionTreeController : ControllerBase
         fullDataSet.NapraviOneHotEncodingSveKolone(ukloniOriginalneKolone: true);
 
         (MojDataSet treningSet, MojDataSet testSet) = fullDataSet.Podijeli(zahtjev.TestProcenat);
-        //treningSet.StandardizirajSveNumeričkeKolone();
-        //testSet.StandardizirajNaOsnovu(treningSet);
 
+        // Kreiraj i treniraj originalnu mrežu
+        MLPKlasifikator mreza = new MLPKlasifikator(treningSet, zahtjev.KlasifikatorParamteri);
+        EvaluacijaRezultat rezultatOriginal = fullDataSet.Evaluiraj(mreza, testSet);
 
-        MLPKlasifikator stablo = new MLPKlasifikator(treningSet, zahtjev.KlasifikatorParamteri);
+        // Snimi mrežu
+        string putanjaZaSnimi = "Mreze/Sales3.json";
+        var helper = new MLPSerijalizacijaHelper();
+        helper.SnimiMrezu(mreza, putanjaZaSnimi);
 
-        EvaluacijaRezultat rezultat = fullDataSet.Evaluiraj(stablo, testSet);
+        // Ponovo ucitaj mrežu
+        MLPKlasifikator ucitanaMreza = helper.UcitajMrezu(putanjaZaSnimi);
+
+        // Testiraj ucitanu mrezu
+        EvaluacijaRezultat rezultatUcitan = fullDataSet.Evaluiraj(ucitanaMreza, testSet);
+
+        // Vratimo rezultate i provjerimo da li su identični
+        bool jeIstaTacnost = Math.Abs(rezultatOriginal.Accuracy - rezultatUcitan.Accuracy) < 1e-6;
 
         return Ok(new
         {
-            rezultat,
+            originalnaTacnost = rezultatOriginal.Accuracy,
+            ucitanaTacnost = rezultatUcitan.Accuracy,
+            jeIstaTacnost,
+            rezultatOriginal,
+            rezultatUcitan
         });
     }
+
 
     [HttpGet]
     public IActionResult Mushroom()

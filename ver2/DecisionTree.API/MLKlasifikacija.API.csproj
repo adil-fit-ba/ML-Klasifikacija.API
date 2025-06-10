@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DecisionTree.Model\DecisionTree.Model.csproj" />
+    <ProjectReference Include="..\DecisionTree.Model\MLKlasifikacija.Model.csproj" />
   </ItemGroup>
 
   <ItemGroup>
