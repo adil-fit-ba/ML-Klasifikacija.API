@@ -20,13 +20,13 @@ public class MLPKlasifikator : KlasifikatorBase
 
     public class MLPParametri
     {
+        // ovo znaci da imamo dva sloja, prvi sa 4 neurona, drugi sa 4 neurona
         public required int[] SkriveniSlojevi { get; set; } = [4, 4];
 
-
+        // broj epoha treniranja
         public required int BrojEpohaTreniranja = 200;
-        /// <summary>
-        /// Stopa učenja (learning rate) – određuje veličinu koraka prilikom ažuriranja težina.
-        /// </summary>
+
+        // Stopa učenja (learning rate) – određuje veličinu koraka prilikom ažuriranja težina.
         public double UcenjeRate { get; set; } = 0.01;
     }
 
@@ -84,11 +84,11 @@ public class MLPKlasifikator : KlasifikatorBase
 
             foreach (var red in podaci.Podaci)
             {
-                double[] input = MojDataSetHelperMLP.RedUInputVektor(red.Atributi, this.MLPAtributi);
-                double[] ciljniVektor = MojDataSetHelperMLP.KreirajCiljniVektor(CiljnaKolona, red.Klasa);
+                double[] input = MLPDataSetHelper.RedUInputVektor(red.Atributi, this.MLPAtributi);
+                double[] ciljniVektor = MLPDataSetHelper.KreirajCiljniVektor(CiljnaKolona, red.Klasa);
 
                 // Trenira i računaj loss
-                var izlaziPoSlojevima = Trenira(input, ciljniVektor);
+                List<double[]> izlaziPoSlojevima = Trenira(input, ciljniVektor);
 
                 // Loss = MSE (Mean Squared Error)
                 double gubitak = 0.0;
@@ -99,19 +99,21 @@ public class MLPKlasifikator : KlasifikatorBase
                 brojPrimjera++;
             }
 
+            #region logika_gubitka_i_logovanja
             if (Loguj && (epoch % 10 == 0 || epoch == ParametriMLP.BrojEpohaTreniranja - 1))
             {
                 Console.Write($"Epoch: {epoch}, AvgLoss: {(ukupniGubitak / brojPrimjera):F10}  --> ");
 
                 // Loguj izlaz prvog primjera
                 var prviRed = podaci.Podaci.First();
-                double[] prviInput = MojDataSetHelperMLP.RedUInputVektor(prviRed.Atributi, this.MLPAtributi);
+                double[] prviInput = MLPDataSetHelper.RedUInputVektor(prviRed.Atributi, this.MLPAtributi);
                 double[] prviIzlaz = prviInput;
                 foreach (var sloj in Slojevi)
                     prviIzlaz = sloj.Izracunaj(prviIzlaz);
 
                 Console.WriteLine("Primjer izlaza za prvi red: [" + string.Join(", ", prviIzlaz.Select(x => x.ToString("F10"))) + "]");
             }
+            #endregion
         }
 
 
@@ -122,7 +124,7 @@ public class MLPKlasifikator : KlasifikatorBase
 
     public override string Predikcija(Dictionary<string, VrijednostAtributa> noviCase)
     {
-        double[] input = MojDataSetHelperMLP.RedUInputVektor(noviCase, MLPAtributi);
+        double[] input = MLPDataSetHelper.RedUInputVektor(noviCase, MLPAtributi);
         double[] izlaz = input;
         foreach (var sloj in Slojevi)
         {

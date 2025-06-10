@@ -12,7 +12,7 @@ namespace DecisionTree.Model.Model.MLP.Helper;
 /// Ova verzija pretpostavlja da su svi atributi numerički (npr. nakon one-hot kodiranja)
 /// i u slučaju da naiđe na nenumerički atribut, baca Exception.
 /// </summary>
-public static class MojDataSetHelperMLP
+public static class MLPDataSetHelper
 {
     /// <summary>
     /// Pretvara jedan red podataka u ulazni vektor za neuronsku mrežu.
