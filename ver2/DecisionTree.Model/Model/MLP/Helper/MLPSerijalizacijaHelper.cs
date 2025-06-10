@@ -86,7 +86,7 @@ namespace DecisionTree.Model.Model.MLP
                     ? AktivacijskeFunkcijeHelper.IzlazniSlojevi.SigmoidDerivacija
                     : AktivacijskeFunkcijeHelper.SkriveniSlojevi.ReLUDerivacija;
 
-                var layer = new Layer(layerDto.Neuroni.Count, layerDto.Neuroni[0].Tezine.Length, aktivacija, derivacija);
+                var layer = new Layer(layerDto.Neuroni.Count, layerDto.Neuroni[0].Tezine.Length, aktivacija);
 
                 for (int j = 0; j < layer.Neuroni.Count; j++)
                 {

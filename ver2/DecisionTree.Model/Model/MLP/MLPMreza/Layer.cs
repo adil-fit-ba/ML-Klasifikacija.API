@@ -10,10 +10,10 @@ public class Layer
 {
     public List<Neuron> Neuroni { get; set; } = new();
 
-    public Layer(int brojNeurona, int brojUlazaPoNeuronu, Func<double, double> aktivacijskaFunkcija, Func<double, double> derivacija)
+    public Layer(int brojNeurona, int brojUlazaPoNeuronu, Func<double, double> aktivacijskaFunkcija)
     {
         for (int i = 0; i < brojNeurona; i++)
-            Neuroni.Add(new Neuron(brojUlazaPoNeuronu, aktivacijskaFunkcija, derivacija));
+            Neuroni.Add(new Neuron(brojUlazaPoNeuronu, aktivacijskaFunkcija));
     }
 
     public double[] Izracunaj(double[] ulazi)
