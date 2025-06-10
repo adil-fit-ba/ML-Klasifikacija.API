@@ -36,6 +36,10 @@ public class MLPKlasifikator : KlasifikatorBase
     }
 
     public MLPParametri ParametriMLP { get; }
+
+    /// <summary>  
+    ///     Konstruktor za inicijalizaciju MLP na osnovu parametara iz json fajla 
+    /// </summary>
     public MLPKlasifikator(
         MLPParametri parametri,
         bool koristiSoftmaxNaIzlazu,
@@ -51,6 +55,9 @@ public class MLPKlasifikator : KlasifikatorBase
         Slojevi = slojevi;
     }
 
+    /// <summary>  
+    ///     Konstruktor za inicijalizaciju MLP iz dataset-a. 
+    /// </summary>
     public MLPKlasifikator(MojDataSet podaci, MLPParametri parametri)
         : base(nameof(MLPKlasifikator), parametri)
     {
@@ -180,7 +187,7 @@ public class MLPKlasifikator : KlasifikatorBase
             }
         }
 
-        // Ažuriranje težina
+        // Ažuriranje težina radi logova učenja
         for (int l = 0; l < Slojevi.Count; l++)
         {
             double[] ulaziUSloj = izlaziPoSlojevima[l];

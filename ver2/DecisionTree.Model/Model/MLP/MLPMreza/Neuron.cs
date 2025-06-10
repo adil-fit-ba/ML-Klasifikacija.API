@@ -14,8 +14,16 @@ namespace DecisionTree.Model.Model.MLP.MLPMreza
         public readonly Func<double, double> aktivacijskaFunkcija;
         public readonly Func<double, double> derivacijaAktivacijskeFunkcije;
 
-        // Za backpropagation
+        /// <summary>
+        /// Izlazna vrijednost neurona nakon primjene aktivacijske funkcije.
+        /// Koristi se za izračun delte u fazi učenja (backpropagation).
+        /// Nije potrebna za predikciju (inferenciju) ako se odmah koristi rezultat.
+        /// </summary>
+
         public double Output { get; private set; }
+        /// <summary>
+        ///  Delta = greška koju neuron koristi da zna koliko treba promijeniti svoje težine u sljedećem koraku treniranja, što je srž metode backpropagation.
+        /// </summary>
         public double Delta { get; set; }
 
         public Neuron(int brojUlaza, Func<double, double> aktivacijskaFunkcija, Func<double, double> derivacija)
