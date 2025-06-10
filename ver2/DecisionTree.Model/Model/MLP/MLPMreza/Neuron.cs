@@ -12,13 +12,9 @@ namespace DecisionTree.Model.Model.MLP.MLPMreza
         public double[] Tezine { get; set; }
         public double Bias { get; set; }
         public readonly Func<double, double> aktivacijskaFunkcija;
-        public readonly Func<double, double> derivacijaAktivacijskeFunkcije;
 
-        // Za backpropagation
-        public double Output { get; private set; }
-        public double Delta { get; set; }
 
-        public Neuron(int brojUlaza, Func<double, double> aktivacijskaFunkcija, Func<double, double> derivacija)
+        public Neuron(int brojUlaza, Func<double, double> aktivacijskaFunkcija)
         {
             var rand = new Random();
             Tezine = new double[brojUlaza];
@@ -27,7 +23,6 @@ namespace DecisionTree.Model.Model.MLP.MLPMreza
 
             Bias = rand.NextDouble() - 0.5;
             this.aktivacijskaFunkcija = aktivacijskaFunkcija;
-            this.derivacijaAktivacijskeFunkcije = derivacija;
         }
 
         public double Izracunaj(double[] ulazi)
@@ -37,31 +32,8 @@ namespace DecisionTree.Model.Model.MLP.MLPMreza
                 suma += ulazi[i] * Tezine[i];
 
             suma += Bias;
-            Output = aktivacijskaFunkcija(suma);
+            var Output = aktivacijskaFunkcija(suma);
             return Output;
-        }
-
-        public void IzracunajDelta(double ciljnaVrijednost)
-        {
-            double greska = ciljnaVrijednost - Output;
-            Delta = greska * derivacijaAktivacijskeFunkcije(Output);
-        }
-
-        public void IzracunajDelta(double[] tezineSljedecihNeurona, double[] deltaSljedecihNeurona)
-        {
-            double suma = 0.0;
-            for (int i = 0; i < tezineSljedecihNeurona.Length; i++)
-                suma += tezineSljedecihNeurona[i] * deltaSljedecihNeurona[i];
-
-            Delta = suma * derivacijaAktivacijskeFunkcije(Output);
-        }
-
-        public void AzurirajTezine(double[] ulazi, double ucenjeRate)
-        {
-            for (int i = 0; i < Tezine.Length; i++)
-                Tezine[i] += ucenjeRate * Delta * ulazi[i];
-
-            Bias += ucenjeRate * Delta;
         }
     }
 }
